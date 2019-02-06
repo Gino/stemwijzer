@@ -6,11 +6,32 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Stemwijzer</title>
 
-
+  <link rel="stylesheet" href="assets/css/w3.css">
   <link rel="stylesheet" href="assets/css/main.css">
+
+  <script src="assets/js/data.js"></script>
   <script src="assets/js/index.js"></script>
 </head>
 <body>
-  
+  <div class="w3-half w3-display-topmiddle w3-margin-top w3-white">
+    <div class="w3-blue w3-padding w3-large">Stemwijzer</div>
+    <div class="w3-padding">
+      <p>Test uw politieke voorkeur aan de hand van deze stellingen.</p>
+    </div>
+
+    <div class="w3-hide w3-padding w3-black" id="subjectArea"></div>
+
+    <button id="startButton" class="w3-button w3-margin w3-black" type="button">Start de stemwijzer</button>
+    
+    <div id="buttons" class="w3-center w3-hide">
+      <button id="agreeButton" class="w3-button  w3-margin w3-green" type="button">Eens</button>
+      <button id="nochoiceButton" class="w3-button w3-margin w3-grey w3-text-white" type="button">Geen van beide</button>
+      <button id="disagreeButton" class="w3-button w3-margin w3-red" type="button">Oneens</button>
+      <button id="skipButton" class="w3-button w3-margin w3-black" type="button">Sla deze vraag over</button>
+      <button id="previousButton" class="w3-hide w3-button w3-margin w3-pink" type="button">Vorige vraag</button>
+    </div>
+
+    <div class="w3-hide w3-grey" id="results"></div>
+  </div>
 </body>
 </html>
