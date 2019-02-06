@@ -13,7 +13,7 @@
   <script src="assets/js/index.js"></script>
 </head>
 <body>
-  <div class="w3-half w3-display-topmiddle w3-margin-top w3-white">
+  <div class="w3-threequarter w3-display-topmiddle w3-margin-top w3-white">
     <div class="w3-blue w3-padding w3-large">Stemwijzer</div>
     <div class="w3-padding">
       <p>Test uw politieke voorkeur aan de hand van deze stellingen.</p>
@@ -29,9 +29,19 @@
       <button id="disagreeButton" class="w3-button w3-margin w3-red" type="button">Oneens</button>
       <button id="skipButton" class="w3-button w3-margin w3-black" type="button">Sla deze vraag over</button>
       <button id="previousButton" class="w3-hide w3-button w3-margin w3-pink" type="button">Vorige vraag</button>
+      
+      <label for="moreWeight">
+        <input type='checkbox' id='moreWeight'>
+        Laat deze vraag twee maal meetellen
+      </label>
     </div>
 
     <div class="w3-hide w3-grey" id="results"></div>
+    <div class="w3-hide" id="selectPartijen">
+      <button id="allePartijen" class="w3-button w3-black" type="button">Alle partijen</button>
+      <button id="grotePartijen" class="w3-button w3-black" type="button">Alleen grote partijen</button>
+      <button id="seculierePartijen" class="w3-button w3-black" type="button">Alleen seculiere partijen</button>
+    </div>
   </div>
 </body>
 </html>

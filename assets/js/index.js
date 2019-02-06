@@ -3,6 +3,9 @@ var disagreed = [];
 var noChoice = [];
 var done = [];
 
+var calculatedResults = null;
+var selectParties = null;
+
 var subjectIndex = 0
 var subject = subjects[subjectIndex];
 
@@ -22,14 +25,20 @@ window.onload = function () {
 
   // Agree button click event
   document.getElementById('agreeButton').addEventListener('click', function () {
+    moreWeight = document.getElementById('moreWeight');
+
     agreed.push(subject);
+    if (moreWeight.checked) agreed.push(subject);
 
     nextSubject(subject);
   });
 
   // Disagree button click event
   document.getElementById('disagreeButton').addEventListener('click', function () {
+    moreWeight = document.getElementById('moreWeight');
+
     disagreed.push(subject);
+    if (moreWeight.checked) agreed.push(subject);
 
     nextSubject(subject);
   });
@@ -52,6 +61,9 @@ window.onload = function () {
 }
 
 function nextSubject(question) {
+  moreWeight = document.getElementById('moreWeight');
+  if (moreWeight.checked) moreWeight.checked = false;
+
   done.push(question)
   subjectIndex++;
 
@@ -63,7 +75,11 @@ function nextSubject(question) {
     
     document.getElementById('results').classList.remove('w3-hide');
 
-    showResults();
+    if (selectParties) {
+      showResults(selectParties);
+    } else {
+      showSelectParties();
+    }
 
     return;
   }
@@ -74,12 +90,13 @@ function nextSubject(question) {
 }
 
 function calculateResults() {
+  moreWeight = document.getElementById('moreWeight');
+
   for (var i = 0; i < agreed.length; i++) {
     for (var x = 0; x < agreed[i].parties.length; x++) {
       for (var y = 0; y < parties.length; y++) {
         if (isNaN(parties[y].points)) parties[y].points = 0
         if (agreed[i].parties[x].name === parties[y].name) {
-
           if (agreed[i].parties[x].position === 'pro') parties[y].points += 1;
         }
       }
@@ -91,8 +108,7 @@ function calculateResults() {
       for (var y = 0; y < parties.length; y++) {
         if (isNaN(parties[y].points)) parties[y].points = 0
         if (disagreed[i].parties[x].name === parties[y].name) {
-
-          if (disagreed[i].parties[x].position === 'pro') parties[y].points -= 1;
+          if (agreed[i].parties[x].position === 'pro') parties[y].points -= 1;
         }
       }
     }
@@ -105,18 +121,33 @@ function calculateResults() {
       }
     }
   }
+  
+  calculatedResults = parties;
 
   return parties;
 }
 
-function showResults() {
-  const result = calculateResults();
+function showResults(selectParties) {
+  calculateResults();
+
+  const result = calculatedResults;
 
   result.sort(function(a, b) {return b.points - a.points})
 
   for (var i = 0; i < result.length; i++) {
-    var div = document.createElement("div");
+    if (selectParties === 'grote') {
+      if (result[i].size < 10) {
+        continue;
+      }
+    } else {
+      if (!result[i].secular) {
+        continue;
+      }
+    }
+
+    var div = document.createElement('div');
     var percentage = Math.floor((result[i].points * 100) / subjects.length);
+
     var text = document.createTextNode(result[i].name + ' ' + percentage + '%');
     
     if (percentage > 0) {
@@ -138,4 +169,31 @@ function previousSubject() {
 
   subject = subjects[subjectIndex];
   subjectArea.innerHTML = subject.statement;
+}
+
+function showSelectParties() {
+  result = calculatedResults;
+  document.getElementById('selectPartijen').classList.remove('w3-hide');
+
+  document.getElementById('allePartijen').addEventListener('click', () => {
+    selectParties = 'all';
+
+    showResults(selectParties);
+    document.getElementById('selectPartijen').classList.add('w3-hide');
+  })
+
+  document.getElementById('grotePartijen').addEventListener('click', () => {
+    selectParties = 'grote';    
+
+    showResults(selectParties);
+    document.getElementById('selectPartijen').classList.add('w3-hide');
+  })
+
+  document.getElementById('seculierePartijen').addEventListener('click', () => {
+    selectParties = 'seculiere';
+
+    showResults(selectParties);
+
+    document.getElementById('selectPartijen').classList.add('w3-hide');
+  })
 }
