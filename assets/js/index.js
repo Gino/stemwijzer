@@ -108,7 +108,7 @@ function calculateResults() {
       for (var y = 0; y < parties.length; y++) {
         if (isNaN(parties[y].points)) parties[y].points = 0
         if (disagreed[i].parties[x].name === parties[y].name) {
-          if (agreed[i].parties[x].position === 'pro') parties[y].points -= 1;
+          if (disagreed[i].parties[x].position === 'pro') parties[y].points -= 1;
         }
       }
     }
