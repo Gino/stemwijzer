@@ -1,13 +1,14 @@
-var agreed = []; 
-var disagreed = []; 
-var noChoice = [];
-var done = [];
+let agreed = []; 
+let disagreed = []; 
+let noChoice = [];
+let done = [];
+let last_answer = null;
 
-var calculatedResults = null;
-var selectParties = null;
+let calculatedResults = null;
+let selectParties = null;
 
-var subjectIndex = 0
-var subject = subjects[subjectIndex];
+let subjectIndex = 0
+let subject = subjects[subjectIndex];
 
 window.onload = function () {
   const button = document.getElementById('startButton');
@@ -30,7 +31,8 @@ window.onload = function () {
     agreed.push(subject);
     if (moreWeight.checked) agreed.push(subject);
 
-    nextSubject(subject, 'agreed');
+    nextSubject(subject);
+    last_answer = 'agreed'
   });
 
   // Disagree button click event
@@ -40,14 +42,16 @@ window.onload = function () {
     disagreed.push(subject);
     if (moreWeight.checked) agreed.push(subject);
 
-    nextSubject(subject, 'disagreed');
+    nextSubject(subject);
+    last_answer = 'disagreed'
   });
 
   // No choice button click event
   document.getElementById('nochoiceButton').addEventListener('click', function () {
     noChoice.push(subject);
 
-    nextSubject(subject, 'noChoice');
+    nextSubject(subject);
+    last_answer = 'noChoice'
   });
 
   // Skip button click event
@@ -61,12 +65,6 @@ window.onload = function () {
 }
 
 function nextSubject(question, status) {
-  if (status) {
-    if (status === 'noChoice') noChoice.pop()
-    if (status === 'disagreed') disagreed.pop()
-    if (status === 'agreed') agreed.pop()
-  }
-
   moreWeight = document.getElementById('moreWeight');
   if (moreWeight.checked) moreWeight.checked = false;
 
@@ -75,7 +73,7 @@ function nextSubject(question, status) {
 
   if (subjectIndex > 0) document.getElementById('previousButton').classList.remove('w3-hide');
 
-  if (done.length === subjects.length) {
+  if (subjectIndex === subjects.length) {
     document.getElementById('buttons').classList.add('w3-hide');
     document.getElementById('subjectArea').classList.add('w3-hide');
     
@@ -98,9 +96,9 @@ function nextSubject(question, status) {
 function calculateResults() {
   moreWeight = document.getElementById('moreWeight');
 
-  for (var i = 0; i < agreed.length; i++) {
-    for (var x = 0; x < agreed[i].parties.length; x++) {
-      for (var y = 0; y < parties.length; y++) {
+  for (let i = 0; i < agreed.length; i++) {
+    for (let x = 0; x < agreed[i].parties.length; x++) {
+      for (let y = 0; y < parties.length; y++) {
         if (isNaN(parties[y].points)) parties[y].points = 0
         if (agreed[i].parties[x].name === parties[y].name) {
           if (agreed[i].parties[x].position === 'pro') parties[y].points += 1;
@@ -109,9 +107,9 @@ function calculateResults() {
     }
   }
 
-  for (var i = 0; i < disagreed.length; i++) {
-    for (var x = 0; x < disagreed[i].parties.length; x++) {
-      for (var y = 0; y < parties.length; y++) {
+  for (let i = 0; i < disagreed.length; i++) {
+    for (let x = 0; x < disagreed[i].parties.length; x++) {
+      for (let y = 0; y < parties.length; y++) {
         if (isNaN(parties[y].points)) parties[y].points = 0
         if (disagreed[i].parties[x].name === parties[y].name) {
           if (disagreed[i].parties[x].position === 'pro') parties[y].points -= 1;
@@ -120,9 +118,9 @@ function calculateResults() {
     }
   }
 
-  for (var i = 0; i < noChoice.length; i++) {
-    for (var x = 0; x < noChoice[i].parties.length; x++) {
-      for (var y = 0; y < parties.length; y++) {
+  for (let i = 0; i < noChoice.length; i++) {
+    for (let x = 0; x < noChoice[i].parties.length; x++) {
+      for (let y = 0; y < parties.length; y++) {
         if (isNaN(parties[y].points)) parties[y].points = 0
       }
     }
@@ -140,7 +138,7 @@ function showResults(selectParties) {
 
   result.sort(function(a, b) {return b.points - a.points})
 
-  for (var i = 0; i < result.length; i++) {
+  for (let i = 0; i < result.length; i++) {
     if (selectParties === 'grote') {
       if (result[i].size < 10) {
         continue;
@@ -151,10 +149,10 @@ function showResults(selectParties) {
       }
     }
 
-    var div = document.createElement('div');
-    var percentage = Math.floor((result[i].points * 100) / subjects.length);
+    const div = document.createElement('div');
+    const percentage = Math.floor((result[i].points * 100) / subjects.length);
 
-    var text = document.createTextNode(result[i].name + ' ' + percentage + '%');
+    const text = document.createTextNode(result[i].name + ' ' + percentage + '%');
     
     if (percentage > 0) {
       div.classList.add('w3-green')
@@ -170,6 +168,14 @@ function showResults(selectParties) {
 }
 
 function previousSubject() {
+  if (last_answer === 'noChoice') {
+    noChoice.pop();
+  } else if (last_answer === 'agreed') {
+    agreed.pop();
+  } else if (last_answer === 'disagreed') {
+    disagreed.pop();
+  }
+
   subjectIndex = subjectIndex - 1;
   if (subjectIndex === 0) document.getElementById('previousButton').classList.add('w3-hide');
 
