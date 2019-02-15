@@ -30,7 +30,7 @@ window.onload = function () {
     agreed.push(subject);
     if (moreWeight.checked) agreed.push(subject);
 
-    nextSubject(subject);
+    nextSubject(subject, 'agreed');
   });
 
   // Disagree button click event
@@ -40,14 +40,14 @@ window.onload = function () {
     disagreed.push(subject);
     if (moreWeight.checked) agreed.push(subject);
 
-    nextSubject(subject);
+    nextSubject(subject, 'disagreed');
   });
 
   // No choice button click event
   document.getElementById('nochoiceButton').addEventListener('click', function () {
     noChoice.push(subject);
 
-    nextSubject(subject);
+    nextSubject(subject, 'noChoice');
   });
 
   // Skip button click event
@@ -60,7 +60,13 @@ window.onload = function () {
   })
 }
 
-function nextSubject(question) {
+function nextSubject(question, status) {
+  if (status) {
+    if (status === 'noChoice') noChoice.pop()
+    if (status === 'disagreed') disagreed.pop()
+    if (status === 'agreed') agreed.pop()
+  }
+
   moreWeight = document.getElementById('moreWeight');
   if (moreWeight.checked) moreWeight.checked = false;
 
